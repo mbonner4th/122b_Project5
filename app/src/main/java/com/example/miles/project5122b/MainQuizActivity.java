@@ -1,27 +1,24 @@
 package com.example.miles.project5122b;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 
-public class P5Game extends AppCompatActivity {
+public class MainQuizActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_p5_game);
+        setContentView(R.layout.main_quiz_activity_layout);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_p5_game, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -38,10 +35,17 @@ public class P5Game extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void startQuiz(View view)
-    {
-        Intent nextScreen = new Intent(getApplicationContext(), MainQuizActivity.class);
 
-        startActivity(nextScreen);
+    public void wrongAnswer(View view)
+    {
+        Context context = getApplicationContext();
+        Toast.makeText(this, "BZZZZZT WRONG", Toast.LENGTH_LONG).show();
     }
+
+    public void correctAnswer(View view)
+    {
+        Context context = getApplicationContext();
+        Toast.makeText(this, "You answered correctly", Toast.LENGTH_LONG).show();
+    }
+
 }

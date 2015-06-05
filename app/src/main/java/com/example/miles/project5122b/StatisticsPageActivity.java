@@ -1,25 +1,22 @@
 package com.example.miles.project5122b;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-
-public class P5Game extends AppCompatActivity {
+public class StatisticsPageActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_p5_game);
+        setContentView(R.layout.activity_statistics_page);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_p5_game, menu);
+        getMenuInflater().inflate(R.menu.menu_statistics_page, menu);
         return true;
     }
 
@@ -36,12 +33,5 @@ public class P5Game extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void startQuiz(View view)
-    {
-        Intent nextScreen = new Intent(getApplicationContext(), MainQuizActivity.class);
-
-        startActivity(nextScreen);
     }
 }
