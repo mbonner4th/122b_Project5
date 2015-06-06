@@ -44,4 +44,11 @@ public class P5Game extends AppCompatActivity {
 
         startActivity(nextScreen);
     }
+
+    public void openStatsPage(View view)
+    {
+        Intent nextScreen = new Intent(getApplicationContext(), StatisticsPageActivity.class);
+
+        startActivity(nextScreen);
+    }
 }
