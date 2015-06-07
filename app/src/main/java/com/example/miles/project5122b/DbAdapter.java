@@ -15,60 +15,63 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DbAdapter extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "quizDb";
-    private static final int    DATABASE_VERSION = 1;
-    private static final String PROGRAM_STAMP = "122B QUIZ GAME";
-
-    private static final String PRIMARY_ID = "_id";
-    private static final String TNN = " TEXT NOT NULL";
-    private static final String END = ";";
-    private static final String IPKA = " INTEGER PRIMARY KEY AUTOINCREMENT";
-    private static final String FK = " FOREIGN KEY ";
-    private static final String RF = " REFERENCES ";
-    private static final String INT = " INTEGER ";
+    private static final String DATABASE_NAME       = "quizDb";
+    private static final int    DATABASE_VERSION    = 1;
+    private static final String PROGRAM_STAMP   = "122B_QUIZ_GAME";
+    private static final String DROP_IF_EXISTS  = "DROP TABLE IF EXISTS ";
+    private static final String CT          = " CREATE TABLE ";
+    private static final String PRIMARY_ID  = "_id";
+    private static final String TNN         = " TEXT NOT NULL";
+    private static final String END         = ";";
+    private static final String IPKA        = " INTEGER PRIMARY KEY";
+    private static final String FK          = " FOREIGN KEY ";
+    private static final String RF          = " REFERENCES ";
+    private static final String INT         = " INTEGER ";
 
     //STARS
-    private static final String STAR_FILE_NAME = "stars.txt";
-    private static final String STARS_TABLE_NAME = "stars";
-    private static final String FIRST_NAME = "first_name";
-    private static final String LAST_NAME = "last_name";
+    private static final String STAR_FILE_NAME      = "stars.csv";
+    private static final String STARS_TABLE_NAME    = "stars";
+    private static final String FIRST_NAME  = "first_name";
+    private static final String LAST_NAME   = "last_name";
     private static final String DOB = "dob";
-    private static final String CREATE_STARS_TABLE =
-            "CREATE TABLE " + STARS_TABLE_NAME +
+    private static final String CREATE_STARS_TABLE = DROP_IF_EXISTS + STARS_TABLE_NAME + END
+            + CT + STARS_TABLE_NAME +
                     enclose(
                             PRIMARY_ID + IPKA + ", "
-                                    + FIRST_NAME + TNN + ", "
-                                    + LAST_NAME + TNN + ", "
-                                    + DOB + TNN)
+                            + FIRST_NAME + TNN + ", "
+                            + LAST_NAME  + TNN + ", "
+                            + DOB + TNN)
                     + END;
 
     //MOVIES
-    private static final String MOVIE_FILE_NAME = "movies.csv";
-    private static final String MOVIES_TABLE_NAME = "movies";
-    private static final String TITLE = "title";
-    private static final String YEAR = "year";
-    private static final String DIRECTOR = "director";
-    private static final String CREATE_MOVIES_TABLE =
-            "CREATE TABLE " + MOVIES_TABLE_NAME +
+    private static final String MOVIE_FILE_NAME     = "movies.csv";
+    private static final String MOVIES_TABLE_NAME   = "movies";
+    private static final String TITLE       = "title";
+    private static final String YEAR        = "year";
+    private static final String DIRECTOR    = "director";
+    private static final String CREATE_MOVIES_TABLE =DROP_IF_EXISTS + MOVIES_TABLE_NAME + END
+            + CT + MOVIES_TABLE_NAME +
                     enclose(
-                            PRIMARY_ID + IPKA + ", "
-                                    + TITLE + TNN + ", "
-                                    + YEAR + TNN + ", "
-                                    + DOB + TNN)
+                            PRIMARY_ID  + IPKA + ", "
+                            + TITLE     + TNN  + ", "
+                            + YEAR      + TNN  + ", "
+                            + DOB       + TNN  + ", "
+                            + DIRECTOR  + TNN)
                     + END;
 
     //STARS_IN_MOVIES
-    private static final String STARS_IN_MOVIES_FILE_NAME = "stars_in_moviess.txt";
-    private static final String STARS_IN_MOVIES_TABLE_NAME = "stars_in_moviess";
-    private static final String STAR_ID_NAME = "star_id";
-    private static final String MOVIE_ID_NAME = "movie_id";
-    private static final String CREATE_STARS_IN_MOVIES_TABLE =
-            "CREATE TABLE " + STARS_IN_MOVIES_TABLE_NAME +
-                    enclose(STAR_ID_NAME + INT + ", "
-                                    + MOVIE_ID_NAME + INT + ", "
-                                    + FK + enclose(STAR_ID_NAME) + RF + STARS_TABLE_NAME + enclose(PRIMARY_ID) + ", "
-                                    + FK + enclose(MOVIE_ID_NAME) + RF + MOVIES_TABLE_NAME + enclose(PRIMARY_ID) + ", "
-                                    + "PRIMARY KEY" + enclose(STAR_ID_NAME + ", " + MOVIE_ID_NAME)
+    private static final String STARS_IN_MOVIES_FILE_NAME   = "stars_in_movies.csv";
+    private static final String STARS_IN_MOVIES_TABLE_NAME  = "stars_in_movies";
+    private static final String STAR_ID_NAME    = "star_id";
+    private static final String MOVIE_ID_NAME   = "movie_id";
+    private static final String CREATE_STARS_IN_MOVIES_TABLE =DROP_IF_EXISTS + STARS_IN_MOVIES_TABLE_NAME + END
+            + CT + STARS_IN_MOVIES_TABLE_NAME +
+                    enclose(
+                            STAR_ID_NAME    + INT + ", "
+                            + MOVIE_ID_NAME + INT + ", "
+                            + FK + enclose(STAR_ID_NAME)  + RF + STARS_TABLE_NAME  + enclose(PRIMARY_ID) + ", "
+                            + FK + enclose(MOVIE_ID_NAME) + RF + MOVIES_TABLE_NAME + enclose(PRIMARY_ID) + ", "
+                            + "PRIMARY KEY" + enclose(STAR_ID_NAME + ", " + MOVIE_ID_NAME)
                     ) + END;
 
     private SQLiteDatabase mDb;
@@ -81,8 +84,15 @@ public class DbAdapter extends SQLiteOpenHelper {
     public DbAdapter(Context ctx) {
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = ctx;
-        this.mDb = getWritableDatabase();
+
+        //this.mDb = getWritableDatabase();
         onCreate(mDb);
+    }
+
+    private void initDb()
+    {
+        this.mDb = null;
+        boolean dbExists;
     }
 
     @Override
