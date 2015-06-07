@@ -2,9 +2,12 @@ package com.example.miles.project5122b;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,10 +17,45 @@ import java.lang.Math;
 
 public class MainQuizActivity extends AppCompatActivity {
 
+    private TextView mTimeLabel;
+    private Handler mHandler = new Handler();
+    private long mStart;
+    private static final long duration = 10000;
+
+    private Runnable updateTask = new Runnable() {
+        public void run() {
+            long now = SystemClock.uptimeMillis();
+            long elapsed = duration - (now - mStart);
+
+            if (elapsed > 0) {
+                int seconds = (int) (elapsed / 1000);
+                int minutes = seconds / 60;
+                seconds     = seconds % 60;
+
+                if (seconds < 10) {
+                    mTimeLabel.setText("" + minutes + ":0" + seconds);
+                } else {
+                    mTimeLabel.setText("" + minutes + ":" + seconds);
+                }
+
+                mHandler.postAtTime(this, now + 1000);
+            }
+            else {
+                mHandler.removeCallbacks(this);
+                finish();
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_quiz_activity_layout);
+
+        mTimeLabel = (TextView)this.findViewById(R.id.timer);
+        mStart = SystemClock.uptimeMillis();
+        mHandler.post(updateTask);
+
         createQuestionAndAnswers();
     }
 
@@ -200,6 +238,11 @@ public class MainQuizActivity extends AppCompatActivity {
 
     public void wrongAnswer()
     {
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("incorrect_answers", pref.getInt("incorrect_answers", 0)+1); //Storing integer
+        editor.commit();
         Context context = getApplicationContext();
         Toast.makeText(this, "BZZZZZT WRONG", Toast.LENGTH_LONG).show();
         createQuestionAndAnswers();
@@ -207,6 +250,10 @@ public class MainQuizActivity extends AppCompatActivity {
 
     public void correctAnswer()
     {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("correct_answers", pref.getInt("correct_answers", 0)+1); //Storing integer
+        editor.commit();
         Context context = getApplicationContext();
         Toast.makeText(this, "You answered correctly", Toast.LENGTH_LONG).show();
         createQuestionAndAnswers();

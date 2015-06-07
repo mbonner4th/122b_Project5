@@ -54,7 +54,7 @@ public class StatisticsPageActivity extends AppCompatActivity {
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
 
-        totalQuizesFeild.setText(Integer.toString(pref.getInt("total_quizes", 0)));
+        totalQuizesFeild.setText(Integer.toString(pref.getInt("quizzes_taken", 0)));
         correctAnswers.setText(Integer.toString(pref.getInt("correct_answers", 0)));
         incorrectAnswers.setText(Integer.toString(pref.getInt("incorrect_answers", 0)));
 
@@ -83,7 +83,7 @@ public class StatisticsPageActivity extends AppCompatActivity {
     //resets stats
         SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
         SharedPreferences.Editor editor = pref.edit();
-        editor.putInt("total_quizes", 0);
+        editor.putInt("quizzes_taken", 0);
         editor.putInt("correct_answers", 0);
         editor.putInt("incorrect_answers", 0);
         editor.putInt("average_time", 0);
@@ -92,6 +92,6 @@ public class StatisticsPageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         finish();
         //he//
-        startActivity(intent);
+//        startActivity(intent);
     }
 }

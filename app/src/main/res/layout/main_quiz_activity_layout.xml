@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Question"
-        android:id="@+id/textView2"
+        android:id="@+id/Question"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:text="Answer 1"
         android:id="@+id/Answer1"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/Question"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="72dp"
         android:onClick="wrongAnswer"/>
@@ -54,4 +54,16 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:onClick="wrongAnswer" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0:00"
+        android:id="@+id/timer"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="41dp"
+        android:layout_alignRight="@+id/Answer4"
+        android:layout_alignEnd="@+id/Answer4"
+        android:layout_alignLeft="@+id/Question"
+        android:layout_alignStart="@+id/Question" />
 </RelativeLayout>
