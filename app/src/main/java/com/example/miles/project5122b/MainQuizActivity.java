@@ -8,8 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
-
+import java.lang.Math;
 
 public class MainQuizActivity extends AppCompatActivity {
 
@@ -17,6 +18,167 @@ public class MainQuizActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_quiz_activity_layout);
+        createQuestionAndAnswers();
+    }
+
+    public void createQuestionAndAnswers()
+    {
+        int questionToDisplay = (int)(Math.random()*7)+1;
+        int correctAnswerNumber = (int)(Math.random()*4)+1;
+        TextView question = (TextView)findViewById(R.id.Question);
+        Button answer1 = (Button)findViewById(R.id.Answer1);
+        Button answer2 = (Button)findViewById(R.id.Answer2);
+        Button answer3 = (Button)findViewById(R.id.Answer3);
+        Button answer4 = (Button)findViewById(R.id.Answer4);
+
+        setOnClickListeners(answer1, answer2, answer3, answer4, correctAnswerNumber);
+
+        switch(questionToDisplay)
+        {
+            case 1:
+                question.setText("Who directed the movie X?");
+                //Generate the answers here
+                break;
+            case 2:
+                question.setText("When was the movie X released?");
+                //Generate the answers here
+                break;
+            case 3:
+                question.setText("Which star was in the movie X?");
+                //Generate the answers here
+                break;
+            case 4:
+                question.setText("In which movie did the stars X and Y appear together?");
+                //Generate the answers here
+                break;
+            case 5:
+                question.setText("Who directed the star X?");
+                //Generate the answers here
+                break;
+            case 6:
+                question.setText("Which star appears in both the movies X and Y?");
+                //Generate the answers here
+                break;
+            case 7:
+                question.setText("Which star did not appear in a movie with star X?");
+                //Generate the answers here
+                break;
+            case 8:
+                question.setText("Who directed the star X in year Y?");
+                //Generate the answers here
+                break;
+        }
+    }
+
+    private void setOnClickListeners(Button answer1, Button answer2, Button answer3, Button answer4, int correctAnswerNumber)
+    {
+        switch(correctAnswerNumber)
+        {
+            case 1:
+                answer1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        correctAnswer();
+                    }
+                });
+                answer2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        wrongAnswer();
+                    }
+                });
+                answer3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        wrongAnswer();
+                    }
+                });
+                answer4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        wrongAnswer();
+                    }
+                });
+                break;
+            case 2:
+                answer1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        wrongAnswer();
+                    }
+                });
+                answer2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        correctAnswer();
+                    }
+                });
+                answer3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        wrongAnswer();
+                    }
+                });
+                answer4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        wrongAnswer();
+                    }
+                });
+                break;
+            case 3:
+                answer1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        wrongAnswer();
+                    }
+                });
+                answer2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        wrongAnswer();
+                    }
+                });
+                answer3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        correctAnswer();
+                    }
+                });
+                answer4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        wrongAnswer();
+                    }
+                });
+                break;
+            case 4:
+                answer1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        wrongAnswer();
+                    }
+                });
+                answer2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        wrongAnswer();
+                    }
+                });
+                answer3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        wrongAnswer();
+                    }
+                });
+                answer4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        correctAnswer();
+                    }
+                });
+                break;
+        }
     }
 
 
@@ -36,16 +198,18 @@ public class MainQuizActivity extends AppCompatActivity {
     }
 
 
-    public void wrongAnswer(View view)
+    public void wrongAnswer()
     {
         Context context = getApplicationContext();
         Toast.makeText(this, "BZZZZZT WRONG", Toast.LENGTH_LONG).show();
+        createQuestionAndAnswers();
     }
 
-    public void correctAnswer(View view)
+    public void correctAnswer()
     {
         Context context = getApplicationContext();
         Toast.makeText(this, "You answered correctly", Toast.LENGTH_LONG).show();
+        createQuestionAndAnswers();
     }
 
 }
