@@ -91,6 +91,7 @@ public class StatisticsPageActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         finish();
+        //he//
         startActivity(intent);
     }
 }
