@@ -99,4 +99,26 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:id="@+id/backButton"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/textView3"
+        android:layout_toStartOf="@+id/textView3"
+        android:onClick="mainMenu"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clear Stats"
+        android:id="@+id/ClearStats"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/averageTime"
+        android:layout_toStartOf="@+id/averageTime"
+        android:onClick="clearStats"
+        />
+
 </RelativeLayout>

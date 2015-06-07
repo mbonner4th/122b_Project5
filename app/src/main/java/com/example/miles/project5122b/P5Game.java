@@ -1,6 +1,7 @@
 package com.example.miles.project5122b;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -40,6 +41,12 @@ public class P5Game extends AppCompatActivity {
 
     public void startQuiz(View view)
     {
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("quizzes_taken", pref.getInt("quizzes_taken", 0)+1); //Storing integer
+        editor.commit();
+
         Intent nextScreen = new Intent(getApplicationContext(), MainQuizActivity.class);
 
         startActivity(nextScreen);
