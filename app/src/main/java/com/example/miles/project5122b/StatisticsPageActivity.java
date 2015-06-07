@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 public class StatisticsPageActivity extends AppCompatActivity {
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +46,11 @@ public class StatisticsPageActivity extends AppCompatActivity {
     }
 
     public void setFeilds(){
+
         TextView totalQuizesFeild = (TextView)findViewById(R.id.quizzesTaken);
         TextView correctAnswers = (TextView)findViewById(R.id.correctAnswers);
         TextView incorrectAnswers = (TextView)findViewById(R.id.incorrectAnswers);
         TextView averageTime = (TextView)findViewById(R.id.averageTime);
-
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
 
@@ -77,7 +80,7 @@ public class StatisticsPageActivity extends AppCompatActivity {
     }
 
     public void clearStats(View view){
-    //Re
+    //resets stats
         SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt("total_quizes", 0);
