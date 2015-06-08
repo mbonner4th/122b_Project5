@@ -33,9 +33,9 @@ public class DbAdapter extends SQLiteOpenHelper {
     private static final String STARS_TABLE_NAME    = "stars";
     private static final String FIRST_NAME  = "first_name";
     private static final String LAST_NAME   = "last_name";
-    private static final String DOB = "dob";
-    private static final String CREATE_STARS_TABLE = DROP_IF_EXISTS + STARS_TABLE_NAME + END
-            + CT + STARS_TABLE_NAME +
+    private static final String DOB         = "dob";
+    private static final String CREATE_STARS_TABLE =
+            CT + STARS_TABLE_NAME +
                     enclose(
                             PRIMARY_ID + IPKA + ", "
                             + FIRST_NAME + TNN + ", "
@@ -43,29 +43,30 @@ public class DbAdapter extends SQLiteOpenHelper {
                             + DOB + TNN)
                     + END;
 
+
     //MOVIES
     private static final String MOVIE_FILE_NAME     = "movies.csv";
     private static final String MOVIES_TABLE_NAME   = "movies";
     private static final String TITLE       = "title";
     private static final String YEAR        = "year";
     private static final String DIRECTOR    = "director";
-    private static final String CREATE_MOVIES_TABLE =DROP_IF_EXISTS + MOVIES_TABLE_NAME + END
-            + CT + MOVIES_TABLE_NAME +
+    private static final String CREATE_MOVIES_TABLE =
+            CT + MOVIES_TABLE_NAME +
                     enclose(
                             PRIMARY_ID  + IPKA + ", "
                             + TITLE     + TNN  + ", "
                             + YEAR      + TNN  + ", "
-                            + DOB       + TNN  + ", "
                             + DIRECTOR  + TNN)
                     + END;
+
 
     //STARS_IN_MOVIES
     private static final String STARS_IN_MOVIES_FILE_NAME   = "stars_in_movies.csv";
     private static final String STARS_IN_MOVIES_TABLE_NAME  = "stars_in_movies";
     private static final String STAR_ID_NAME    = "star_id";
     private static final String MOVIE_ID_NAME   = "movie_id";
-    private static final String CREATE_STARS_IN_MOVIES_TABLE =DROP_IF_EXISTS + STARS_IN_MOVIES_TABLE_NAME + END
-            + CT + STARS_IN_MOVIES_TABLE_NAME +
+    private static final String CREATE_STARS_IN_MOVIES_TABLE =
+            CT + STARS_IN_MOVIES_TABLE_NAME +
                     enclose(
                             STAR_ID_NAME    + INT + ", "
                             + MOVIE_ID_NAME + INT + ", "
@@ -73,6 +74,7 @@ public class DbAdapter extends SQLiteOpenHelper {
                             + FK + enclose(MOVIE_ID_NAME) + RF + MOVIES_TABLE_NAME + enclose(PRIMARY_ID) + ", "
                             + "PRIMARY KEY" + enclose(STAR_ID_NAME + ", " + MOVIE_ID_NAME)
                     ) + END;
+
 
     private SQLiteDatabase mDb;
     private Context mContext;
@@ -85,7 +87,7 @@ public class DbAdapter extends SQLiteOpenHelper {
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = ctx;
 
-        //this.mDb = getWritableDatabase();
+        this.mDb = getWritableDatabase();
         onCreate(mDb);
     }
 
@@ -110,9 +112,18 @@ public class DbAdapter extends SQLiteOpenHelper {
         readFileToDatabase(MOVIE_FILE_NAME, MOVIES_TABLE_NAME,moviesColumns ,db);
 
         ArrayList<String> starsInMoviesColumns = new ArrayList<String>(){{add(STAR_ID_NAME);   add(MOVIE_ID_NAME);}};
-        readFileToDatabase(STARS_IN_MOVIES_FILE_NAME, STARS_IN_MOVIES_TABLE_NAME,starsInMoviesColumns ,db);
+        readFileToDatabase(STARS_IN_MOVIES_FILE_NAME, STARS_IN_MOVIES_TABLE_NAME, starsInMoviesColumns ,db);
 
     }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        dropTableIfExists(db, STARS_TABLE_NAME);
+        dropTableIfExists(db, MOVIES_TABLE_NAME);
+        dropTableIfExists(db, STARS_IN_MOVIES_TABLE_NAME);
+        onCreate(db);
+    }
+
 
     private void readFileToDatabase(String filename, String tableName, ArrayList<String> columnNames, SQLiteDatabase db) {
         try {
@@ -136,18 +147,21 @@ public class DbAdapter extends SQLiteOpenHelper {
 
 
     private void createStarsTable(SQLiteDatabase db) {
+        dropTableIfExists(db, STARS_TABLE_NAME);
         Log.d(PROGRAM_STAMP,"Creating Stars table:\n" + CREATE_STARS_TABLE);
         wrapExecuteSql(db, CREATE_STARS_TABLE);
     }
 
 
     private void createMoviesTable(SQLiteDatabase db) {
+        dropTableIfExists(db, MOVIES_TABLE_NAME);
         Log.d(PROGRAM_STAMP, "Creating movies table:\n" + CREATE_MOVIES_TABLE);
         wrapExecuteSql(db, CREATE_MOVIES_TABLE);
     }
 
 
     private void createStarsInMoviesTable(SQLiteDatabase db) {
+        dropTableIfExists(db, STARS_IN_MOVIES_TABLE_NAME);
         Log.d(PROGRAM_STAMP, "Creating Stars in movies table:\n" + CREATE_STARS_IN_MOVIES_TABLE);
         wrapExecuteSql(db, CREATE_STARS_IN_MOVIES_TABLE);
     }
@@ -168,12 +182,7 @@ public class DbAdapter extends SQLiteOpenHelper {
         }
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        dropTableIfExists(db, STARS_TABLE_NAME);
-        dropTableIfExists(db, MOVIES_TABLE_NAME);
-        dropTableIfExists(db, STARS_IN_MOVIES_TABLE_NAME);
-        onCreate(db);
-    }
+    //Who directed the movie X?
+
 
 }
