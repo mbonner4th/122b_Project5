@@ -219,6 +219,18 @@ public class DbAdapter extends SQLiteOpenHelper {
         }
         return null;
     }
+    public Star cursor_to_star_ids(Cursor c) {
+        if (!c.isBeforeFirst() && !c.isAfterLast()) {
+            Log.d(PROGRAM_STAMP, "cursor columns are: "+c.getColumnName(4));
+            return new Star(
+                    c.getInt(c.getColumnIndex(PRIMARY_ID)),
+                    c.getString(c.getColumnIndex(FIRST_NAME)),
+                    c.getString(c.getColumnIndex(LAST_NAME)),
+                    c.getString(c.getColumnIndex(DOB)),
+                    new ArrayList<>(Arrays.asList(c.getString(c.getColumnIndex("concat")).split(","))));
+        }
+        return null;
+    }
 
 
     public Star cursor_to_star(Cursor c) {
@@ -343,10 +355,12 @@ public class DbAdapter extends SQLiteOpenHelper {
         C.close();
         return stars;
     }
+
     public ArrayList<Movie> get_movies_with_ids_raw(String SQL)
     {
         Cursor C;
         ArrayList<Movie> movies = new ArrayList<>();
+        Log.d(PROGRAM_STAMP, SQL);
         C = wrapQuerySql(SQL);
         if (C.moveToFirst()) {
             while (!C.isAfterLast()) {
@@ -358,7 +372,21 @@ public class DbAdapter extends SQLiteOpenHelper {
         C.close();
         return movies;
     }
-
+    public ArrayList<Star> get_stars_with_ids_raw(String SQL)
+    {
+        Cursor C;
+        ArrayList<Star> stars = new ArrayList<>();
+        C = wrapQuerySql(SQL);
+        if (C.moveToFirst()) {
+            while (!C.isAfterLast()) {
+                stars.add(cursor_to_star_ids(C));
+                // do what ever you want here
+                C.moveToNext();
+            }
+        }
+        C.close();
+        return stars;
+    }
 
     public ArrayList<Movie> get_movies_with_two_or_more_stars()
     {
@@ -368,6 +396,15 @@ public class DbAdapter extends SQLiteOpenHelper {
                         " GROUP BY sim."+MOVIE_ID_NAME+" HAVING COUNT(sim."+STAR_ID_NAME+")>1) mv, "+
                 STARS_IN_MOVIES_TABLE_NAME+" s "+
                 "WHERE s."+MOVIE_ID_NAME+" = mv."+PRIMARY_ID+" GROUP BY mv."+PRIMARY_ID+" "+OBR+LIMIT+"1"+END );
+    }
+
+    public ArrayList<Movie> get_movies_where_x_and_y_dont_appear_together(String star1id, String star2id)
+    {
+
+        return get_movies_with_ids_raw("SELECT m."+PRIMARY_ID+", m."+TITLE+", m."+YEAR+", m."+DIRECTOR+
+                ", GROUP_CONCAT(sim."+STAR_ID_NAME+") AS concat "+"FROM "+MOVIES_TABLE_NAME+" m, "+STARS_IN_MOVIES_TABLE_NAME+
+                " sim  where m."+PRIMARY_ID+" = sim."+MOVIE_ID_NAME+" and sim."+STAR_ID_NAME+"!="
+                +star2id+" or sim."+STAR_ID_NAME+"!="+star1id+ OBR +LIMIT+"3"+END);
     }
 }
 

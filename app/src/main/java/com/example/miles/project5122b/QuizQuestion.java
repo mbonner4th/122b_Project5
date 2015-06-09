@@ -99,7 +99,13 @@ public class QuizQuestion
                 answers.add(new QuizAnswers(correctMovie.getTitle(),true));
                 descriptors.add(star1.getFirst_name()+" "+ star1.getLast_name());
                 descriptors.add(star2.getFirst_name()+" "+ star2.getLast_name());
-
+                incorrect_movies = mdb.get_movies_where_x_and_y_dont_appear_together(Integer.toString(star1.getId()),Integer.toString(star2.getId()));
+                for (Movie m: incorrect_movies)
+                {
+                    answers.add(new QuizAnswers(m.getTitle(),false));
+                    answers.add(new QuizAnswers(m.getTitle(),false));
+                    answers.add(new QuizAnswers(m.getTitle(),false));
+                }
 
                 break;
             case 5:
