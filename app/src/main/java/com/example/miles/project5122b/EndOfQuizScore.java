@@ -77,6 +77,7 @@ public class EndOfQuizScore extends AppCompatActivity {
 
         editor.putInt("average_time", newAverage);
         editor.commit();
+        //.//
     }
 
     public void onClick(View view){
