@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.view.MenuItem;
@@ -20,47 +19,152 @@ public class MainQuizActivity extends AppCompatActivity {
 
     private TextView mTimeLabel;
     private Handler mHandler = new Handler();
-    private long mStart;
-    private static final long duration = 20000;
+
+    private static final long duration = 180000;
+    private long passed = duration;
+
+    private updateTask mUpdateTask;
+
+
     private DbAdapter mdb;
     private QuizQuestion question;
 
-    private final Toast toastObject = null;
 
-    private Runnable updateTask = new Runnable() {
+//    private Runnable updateTask = new Runnable() {
+//
+//        public void run() {
+//            long now = SystemClock.uptimeMillis();
+//            long elapsed = duration - (now - mStart);
+//
+//            if (elapsed > 0) {
+//                int seconds = (int) (elapsed / 1000);
+//                int minutes = seconds / 60;
+//                seconds     = seconds % 60;
+//
+//                if (seconds < 10) {
+//                    mTimeLabel.setText("" + minutes + ":0" + seconds);
+//                } else {
+//                    mTimeLabel.setText("" + minutes + ":" + seconds);
+//                }
+//
+//                mHandler.postAtTime(this, now + 1000);
+//            }
+//            else {
+//
+//                SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
+//                SharedPreferences.Editor editor = pref.edit();
+//                editor.putInt("local_average_time", (int)duration);
+//                editor.commit();
+//
+//                mHandler.removeCallbacks(this);
+//                finish();
+//
+//                Intent nextScreen = new Intent(getApplicationContext(), EndOfQuizScore.class);
+//                startActivity(nextScreen);
+//            }
+//        }
+//    };
+
+    public class updateTask implements Runnable{
+        private Object mPauseLock;
+        private boolean mPaused;
+        private boolean mFinished;
+
+        private boolean paused;
+        private long mDurration;
+        private long mStart;
+        private long mElapsed;
+
+        public updateTask( long durration, long currentTime){
+            mPauseLock = new Object();
+            mPaused = false;
+            paused = false;
+            mFinished = false;
+            this.mDurration = durration;
+            this.mStart = currentTime;
+
+        }
         public void run() {
-            long now = SystemClock.uptimeMillis();
-            long elapsed = duration - (now - mStart);
 
-            if (elapsed > 0) {
-                int seconds = (int) (elapsed / 1000);
-                int minutes = seconds / 60;
-                seconds     = seconds % 60;
+                long now = SystemClock.uptimeMillis();
+                mElapsed = mDurration - (now - mStart);
 
-                if (seconds < 10) {
-                    mTimeLabel.setText("" + minutes + ":0" + seconds);
-                } else {
-                    mTimeLabel.setText("" + minutes + ":" + seconds);
+                if ((mElapsed > 0) && !paused ) {
+                    int seconds = (int) (mElapsed / 1000);
+                    int minutes = seconds / 60;
+                    seconds = seconds % 60;
+
+                    if (seconds < 10) {
+                        mTimeLabel.setText("" + minutes + ":0" + seconds);
+                    } else {
+                        mTimeLabel.setText("" + minutes + ":" + seconds);
+                    }
+
+                    mHandler.postAtTime(this, now + 1000);
+                }
+                if((mElapsed <= 0)) {
+                    SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putInt("local_average_time", (int) duration);
+                    editor.commit();
+                    mHandler.removeCallbacks(this);
+                    finish();
+                    Intent nextScreen = new Intent(getApplicationContext(), EndOfQuizScore.class);
+                    startActivity(nextScreen);
+                }
+                if (paused){
                 }
 
-                mHandler.postAtTime(this, now + 1000);
-            }
-            else {
+                synchronized (mPauseLock) {
+                    while (mPaused) {
+                        try {
+                            mPauseLock.wait();
+                            //System.out.println("AAAAAAAAAAAA");
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
+        }
+        /**
+         * Call this on pause.
+         */
+        public void onPause() {
 
-                SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putInt("local_average_time", (int)duration);
-                editor.commit();
-
-                mHandler.removeCallbacks(this);
-                finish();
-
-                Intent nextScreen = new Intent(getApplicationContext(), EndOfQuizScore.class);
-                startActivity(nextScreen);
-
+            //setPaused(true);
+           // setmCurrentTime(SystemClock.uptimeMillis());
+            synchronized (mPauseLock) {
+                mPaused = true;
+                System.out.println("AAAAAAAAAAAA");
             }
         }
-    };
+
+        /**
+         * Call this on resume.
+         */
+        public void onResume() {
+            //setPaused(false);
+            //setmCurrentTime(SystemClock.uptimeMillis());
+            synchronized (mPauseLock) {
+                mPaused = false;
+                mPauseLock.notifyAll();
+            }
+        }
+
+        public void setmDurration(long mDurration){
+            this.mDurration = mDurration;
+        }
+        public void setmCurrentTime(long currentTime){
+            this.mStart = currentTime;
+        }
+        public void setmElapsed(long elapsed){this.mElapsed =elapsed;}
+        public void setPaused(boolean stop){this.paused = stop;}
+        public long getmDurration(){return mDurration;}
+        public long getmStart(){return mStart;}
+        public long getmElapsed(){return mElapsed;}
+
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +173,33 @@ public class MainQuizActivity extends AppCompatActivity {
         setContentView(R.layout.main_quiz_activity_layout);
 
         mTimeLabel = (TextView)this.findViewById(R.id.timer);
-        mStart = SystemClock.uptimeMillis();
-        mHandler.post(updateTask);
+        long mStart = SystemClock.uptimeMillis();
+
+        mUpdateTask = new updateTask(duration, mStart);
+        mUpdateTask.run();
+
+//        mHandler.post(updateTask);
 
         createQuestionAndAnswers();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        passed = mUpdateTask.getmElapsed();
+        mUpdateTask.setPaused(true);
+//        mUpdateTask.run();
+        //mUpdateTask.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mUpdateTask.setPaused(false);
+        mUpdateTask.setmCurrentTime(SystemClock.uptimeMillis());
+        mUpdateTask.setmDurration(passed);
+        mUpdateTask.run();
+        //mUpdateTask.onResume();
     }
 
     public void createQuestionAndAnswers()
