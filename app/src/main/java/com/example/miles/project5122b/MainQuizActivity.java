@@ -24,7 +24,8 @@ public class MainQuizActivity extends AppCompatActivity {
     private static final long duration = 20000;
     private DbAdapter mdb;
     private QuizQuestion question;
-    
+
+    private final Toast toastObject = null;
 
     private Runnable updateTask = new Runnable() {
         public void run() {
@@ -76,7 +77,9 @@ public class MainQuizActivity extends AppCompatActivity {
 
     public void createQuestionAndAnswers()
     {
-        int questionToDisplay = (int)(Math.random()*7)+1;
+//        int questionToDisplay = (int)(Math.random()*7)+1;
+        int questionToDisplay = (int)(Math.random()*2)+1;
+//        int questionToDisplay = 2;
         int correctAnswerNumber = (int)(Math.random()*4)+1;
         TextView question = (TextView)findViewById(R.id.Question);
         Button answer1 = (Button)findViewById(R.id.Answer1);
@@ -84,49 +87,75 @@ public class MainQuizActivity extends AppCompatActivity {
         Button answer3 = (Button)findViewById(R.id.Answer3);
         Button answer4 = (Button)findViewById(R.id.Answer4);
 
-        String rightAnswer;
+        String rightAnswer = "";
         ArrayList<String> wrongAnswers = new ArrayList<String>();
 
         this.question = new QuizQuestion(questionToDisplay, this.mdb);
+
+        ArrayList<QuizAnswers> MyQuizAnswers = this.question.getAnswers();
+        for(QuizAnswers QA: MyQuizAnswers) {
+            if (QA.isCorrectAnswer()) {
+                rightAnswer = QA.getAnswer();
+            } else {
+                wrongAnswers.add(QA.getAnswer());
+            }
+        }
+
+        ArrayList<String> descriptors = this.question.getDescriptors();
+
         switch(questionToDisplay)
         {
             case 1:
-                question.setText("Who directed the movie X?");
+
+                question.setText("Who directed the movie "+descriptors.get(0)+"?");
                 //Generate the answers here
+
                 break;
             case 2:
-                question.setText("When was the movie X released?");
+                question.setText("When was the movie "+ descriptors.get(0)+" released?");
                 //Generate the answers here
                 break;
             case 3:
-                question.setText("Which star was in the movie X?");
+                question.setText("Which star was in the movie" +
+                        " "+descriptors.get(0)+"?");
                 //Generate the answers here
                 break;
             case 4:
-                question.setText("In which movie did the stars X and Y appear together?");
+                question.setText("In which movie did the stars" +
+                        " " +descriptors.get(0)+" and "+ descriptors.get(1)+" appear together?");
                 //Generate the answers here
                 break;
             case 5:
-                question.setText("Who directed the star X?");
+                question.setText("Who directed the star" +
+                        " "+descriptors.get(0)+"?");
                 //Generate the answers here
                 break;
             case 6:
-                question.setText("Which star appears in both the movies X and Y?");
+                question.setText("Which star appears in both the movies " +
+                        ""+descriptors.get(0)+" and " +
+                        ""+descriptors.get(1)+"?");
                 //Generate the answers here
                 break;
             case 7:
-                question.setText("Which star did not appear in a movie with star X?");
+                question.setText("Which star did not appear in a movie with star" +
+                        " "+descriptors.get(0)+"?");
                 //Generate the answers here
                 break;
             case 8:
-                question.setText("Who directed the star X in year Y?");
+                question.setText("Who directed the star" +
+                        " "+descriptors.get(0)+" in year" +
+                        " "+descriptors.get(1)+"?");
                 //Generate the answers here
                 break;
         }
-        rightAnswer = "correct";
-        wrongAnswers.add("Wrong");
-        wrongAnswers.add("Wrong");
-        wrongAnswers.add("Wrong");
+        if(rightAnswer.equals("")){
+            rightAnswer = "correct";
+        }
+        if(wrongAnswers.size() > 3) {
+            wrongAnswers.add("Wrong");
+            wrongAnswers.add("Wrong");
+            wrongAnswers.add("Wrong");
+        }
         setOnClickListeners(answer1, answer2, answer3, answer4, correctAnswerNumber, rightAnswer, wrongAnswers);
     }
 
@@ -291,9 +320,9 @@ public class MainQuizActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt("incorrect_answers", pref.getInt("incorrect_answers", 0) + 1); //Storing integer
         editor.putInt("local_incorrect", pref.getInt("local_incorrect", 0) + 1 );
-        editor.commit();
+        editor.apply();
         Context context = getApplicationContext();
-        Toast.makeText(this, "BZZZZZT WRONG", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "BZZZZZT WRONG", Toast.LENGTH_SHORT).show();
         createQuestionAndAnswers();
     }
 
@@ -303,9 +332,9 @@ public class MainQuizActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt("correct_answers", pref.getInt("correct_answers", 0)+1); //Storing integer
         editor.putInt("local_correct", pref.getInt("local_correct", 0) + 1 );
-        editor.commit();
+        editor.apply();
         Context context = getApplicationContext();
-        Toast.makeText(this, "You answered correctly", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "You answered correctly", Toast.LENGTH_SHORT).show();
         createQuestionAndAnswers();
     }
 

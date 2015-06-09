@@ -57,7 +57,7 @@ public class EndOfQuizScore extends AppCompatActivity {
 
         int aveSeconds;
         if((numCorrect+ numIncorrect)!= 0) {
-            aveSeconds = (int) ((numLocalTime / 1000) / (numCorrect + numIncorrect));
+            aveSeconds = (int)((numLocalTime / 1000) / (numCorrect + numIncorrect));
         }
         else{
             aveSeconds = (int)(numLocalTime / 1000);
@@ -82,7 +82,7 @@ public class EndOfQuizScore extends AppCompatActivity {
         }
 
         editor.putInt("average_time", newAverage);
-        editor.commit();
+        editor.apply();
         //.//
     }
 
@@ -95,7 +95,7 @@ public class EndOfQuizScore extends AppCompatActivity {
         editor.putInt("local_correct", 0);
         editor.putInt("local_incorrect", 0);
 
-        editor.commit();
+        editor.apply();
         Intent nextScreen;
 
         switch (view.getId()){

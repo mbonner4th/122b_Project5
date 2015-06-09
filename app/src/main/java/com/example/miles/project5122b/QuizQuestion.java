@@ -16,6 +16,14 @@ public class QuizQuestion
     private ArrayList<QuizAnswers> answers = new ArrayList<>();
     private DbAdapter mdb;
 
+    public ArrayList<String> getDescriptors(){
+        return descriptors;
+    }
+
+    public ArrayList<QuizAnswers> getAnswers(){
+        return answers;
+    }
+
     public  QuizQuestion(int question_code, DbAdapter db){
         this.mdb = db;
 
@@ -42,7 +50,7 @@ public class QuizQuestion
                 incorrect_movies = mdb.get_movies_not_from_the_year(correctMovie.getYear());
                 for (Movie m: incorrect_movies)
                 {
-                    answers.add(new QuizAnswers(m.getDirector(),false));
+                    answers.add(new QuizAnswers(m.getYear(),false));
                 }
                 descriptors.add(correctMovie.getTitle());
 
@@ -74,49 +82,4 @@ public class QuizQuestion
         }
     }
 
-    private void who_directed_movie()
-    {
-
-        //get correct answer and descriptors
-        //set correct answer and descriptors
-
-        //get 3 incorrect answers
-        //set 3 incorrect answers
-
-    }
-
-    private void when_was_movie_released()
-    {
-
-    }
-
-    private void which_star_was_in_movie()
-    {
-
-    }
-
-    private void in_which_movie_did_x_and_y_star()
-    {
-
-    }
-
-    private void who_directed_star_x()
-    {
-
-    }
-
-    private void which_star_appears_in_x_and_y()
-    {
-
-    }
-
-    private void which_star_didnt_star_with_x()
-    {
-
-    }
-
-    private void who_directed_star_x_in_year_y()
-    {
-
-    }
 }
