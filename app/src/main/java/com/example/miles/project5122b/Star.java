@@ -1,5 +1,7 @@
 package com.example.miles.project5122b;
 
+import java.util.ArrayList;
+
 /**
  * Created by Lawrence on 6/8/2015.
  */
@@ -9,6 +11,20 @@ public class Star {
     private String first_name;
     private String last_name;
     private String dob;
+    private ArrayList<String> movieIDs;
+
+    public ArrayList<String> getMovieIDs() {
+        return movieIDs;
+    }
+
+    public void addMovieId(String toAdd)
+    {
+        this.movieIDs.add(toAdd);
+    }
+    
+    public void setMovieIDs(ArrayList<String> movieIDs) {
+        this.movieIDs = movieIDs;
+    }
 
     public Star(int id, String first_name, String last_name, String dob) {
         this.id = id;
@@ -17,6 +33,13 @@ public class Star {
         this.dob = dob;
     }
 
+    public Star(int id, String first_name, String last_name, String dob, ArrayList<String> movieIDs) {
+        this.id = id;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.dob = dob;
+        this.movieIDs = movieIDs;
+    }
 
     public int getId() {
         return id;
