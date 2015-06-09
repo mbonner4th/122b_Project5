@@ -12,23 +12,40 @@ public class QuizQuestion
     private static final int NUMBER_OF_CORRECT_ANSWERS  = 1;
     private static final int NUMBER_OF_ANSWERS          = 4;
 
-    private ArrayList<String> descriptors;
-    private ArrayList<QuizAnswers> answers;
+    private ArrayList<String> descriptors = new ArrayList<>();
+    private ArrayList<QuizAnswers> answers = new ArrayList<>();
     private DbAdapter mdb;
 
     public  QuizQuestion(int question_code, DbAdapter db){
         this.mdb = db;
-        mdb.get_random_movie();
-        mdb.get_random_star();
+
+        Movie correctMovie;
+        ArrayList<Movie> incorrect_movies;
         switch(question_code)
         {
             case 1:
                 //"Who directed the movie X?"movie
-                //Generate the answers here
+                correctMovie = mdb.get_movies_where(null,1).get(0);
+                answers.add(new QuizAnswers(correctMovie.getDirector(), true));
+                incorrect_movies = mdb.get_movies_not_directed_by(correctMovie.getDirector());
+                for (Movie m: incorrect_movies)
+                {
+                    answers.add(new QuizAnswers(m.getDirector(),false));
+                }
+                descriptors.add(correctMovie.getTitle());
+
                 break;
             case 2:
                 //"When was the movie X released?"movie
-                //Generate the answers here
+                correctMovie = mdb.get_movies_where(null,1).get(0);
+                answers.add(new QuizAnswers(correctMovie.getYear(), true));
+                incorrect_movies = mdb.get_movies_not_from_the_year(correctMovie.getYear());
+                for (Movie m: incorrect_movies)
+                {
+                    answers.add(new QuizAnswers(m.getDirector(),false));
+                }
+                descriptors.add(correctMovie.getTitle());
+
                 break;
             case 3:
                 //"Which star was in the movie X?"movie

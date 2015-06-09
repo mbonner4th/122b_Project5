@@ -27,6 +27,8 @@ public class DbAdapter extends SQLiteOpenHelper {
     private static final String FK          = " FOREIGN KEY ";
     private static final String RF          = " REFERENCES ";
     private static final String INT         = " INTEGER ";
+    private static final String LIMIT       = " LIMIT ";
+    private static final String OBR         = " ORDER BY RANDOM() ";
 
     //STARS
     private static final String STAR_FILE_NAME      = "stars.csv";
@@ -195,31 +197,104 @@ public class DbAdapter extends SQLiteOpenHelper {
     public Movie get_random_movie()
     {
         Movie m;
-        Cursor c = wrapQuerySql("SELECT * FROM "+
-                MOVIES_TABLE_NAME+" ORDER BY RANDOM() LIMIT 1;");
+        Cursor c = wrapQuerySql("SELECT * FROM " + MOVIES_TABLE_NAME + " ORDER BY RANDOM() LIMIT 1;");
         c.moveToFirst();
         Log.d(PROGRAM_STAMP, "generating random Movie:");
-        m = new Movie(
-                c.getInt(c.getColumnIndex(PRIMARY_ID)),
-                c.getString(c.getColumnIndex(TITLE)),
-                c.getString(c.getColumnIndex(YEAR)),
-                c.getString(c.getColumnIndex(DIRECTOR)));
+        m = cursor_to_movie(c);
         c.close();
         Log.d(PROGRAM_STAMP,  m.toString());
         return m;
     }
 
+    public Movie cursor_to_movie(Cursor c)
+    {
+        if (!c.isBeforeFirst() && !c.isAfterLast())
+        {
+            return new Movie(
+                    c.getInt(   c.getColumnIndex(PRIMARY_ID)),
+                    c.getString(c.getColumnIndex(TITLE)),
+                    c.getString(c.getColumnIndex(YEAR)),
+                    c.getString(c.getColumnIndex(DIRECTOR)));
+        }
+        return null;
+    }
+
+    public Star cursor_to_star(Cursor c)
+    {
+        if(!c.isBeforeFirst()&&!c.isAfterLast())
+        {
+            return new Star(
+                    c.getInt(   c.getColumnIndex(PRIMARY_ID)),
+                    c.getString(c.getColumnIndex(FIRST_NAME)),
+                    c.getString(c.getColumnIndex(LAST_NAME)),
+                    c.getString(c.getColumnIndex(DOB)));
+        }
+        return null;
+    }
+
+    public ArrayList<Movie> get_movies_not_directed_by(String director)
+    {
+        Log.d(PROGRAM_STAMP, "generating movies not from:\'" + director + "\'");
+        return get_movies_where("movies."+DIRECTOR+"!=\'" + director + "\'", 3);
+    }
+
+    public ArrayList<Movie> get_movies_not_from_the_year(String year)
+    {
+        Log.d(PROGRAM_STAMP, "generating movies not from:"+year);
+        return get_movies_where("movies."+YEAR+"!=\'" + year + "\'", 3);
+    }
+
+    public ArrayList<Movie> get_movies_where(String whereClause, int num_required)
+    {
+        Cursor C;
+        ArrayList<Movie> movies = new ArrayList<>();
+        if (whereClause!=null) {
+            C = wrapQuerySql("SELECT * FROM " + MOVIES_TABLE_NAME + " where " + whereClause + " " +OBR+ LIMIT + num_required + END);
+        }
+        else
+        {
+            C = wrapQuerySql("SELECT * FROM " + MOVIES_TABLE_NAME + " " + OBR + LIMIT + num_required + END);
+        }
+        if (C.moveToFirst()){
+            while(!C.isAfterLast()){
+                movies.add(cursor_to_movie(C));
+                // do what ever you want here
+                C.moveToNext();
+            }
+        }
+        C.close();
+        return movies;
+    }
+
+    public ArrayList<Star> get_stars_where(String whereClause, int num_required)
+    {
+        Cursor C;
+        ArrayList<Star> stars = new ArrayList<>();
+        if (whereClause!=null) {
+            C = wrapQuerySql("SELECT * FROM" + STARS_TABLE_NAME + " " + whereClause + " " + OBR + LIMIT + num_required + END);
+        }
+        else
+        {
+            C = wrapQuerySql("SELECT * FROM" + STARS_TABLE_NAME + OBR + LIMIT + num_required + END);
+        }
+        if (C.moveToFirst()){
+            while(!C.isAfterLast()){
+                stars.add(cursor_to_star(C));
+                // do what ever you want here
+                C.moveToNext();
+            }
+        }
+        C.close();
+        return stars;
+    }
+
     public Star get_random_star()
     {
         Star s;
-        Cursor c = wrapQuerySql("SELECT * FROM "+STARS_TABLE_NAME+" ORDER BY RANDOM() LIMIT 1;");
+        Cursor c = wrapQuerySql("SELECT * FROM "+STARS_TABLE_NAME+OBR+LIMIT+"1;");
         c.moveToFirst();
         Log.d(PROGRAM_STAMP, "generating random Star:");
-        s = new Star(
-                c.getInt(c.getColumnIndex(PRIMARY_ID)),
-                c.getString(c.getColumnIndex(FIRST_NAME)),
-                c.getString(c.getColumnIndex(LAST_NAME)),
-                c.getString(c.getColumnIndex(DOB)));
+        s = cursor_to_star(c);
         c.close();
         Log.d(PROGRAM_STAMP, s.toString());
         return s;
