@@ -279,7 +279,10 @@ public class DbAdapter extends SQLiteOpenHelper {
     {
         return get_stars_where(STARS_TABLE_NAME+"._id="+id,1);
     }
-
+    public ArrayList<Movie> get_movie_from_id(String id)
+    {
+        return get_movies_where(MOVIES_TABLE_NAME+"._id="+id,1);
+    }
     public ArrayList<Movie> get_movies_with_ids_where(String whereClause, int num_required)
     {
         Log.d(PROGRAM_STAMP, "start"+" get_movies_with_ids_where");
@@ -405,6 +408,30 @@ public class DbAdapter extends SQLiteOpenHelper {
                 ", GROUP_CONCAT(sim."+STAR_ID_NAME+") AS concat "+"FROM "+MOVIES_TABLE_NAME+" m, "+STARS_IN_MOVIES_TABLE_NAME+
                 " sim  where m."+PRIMARY_ID+" = sim."+MOVIE_ID_NAME+" and sim."+STAR_ID_NAME+"!="
                 +star2id+" or sim."+STAR_ID_NAME+"!="+star1id+ OBR +LIMIT+"3"+END);
+    }
+    public ArrayList<Star> get_stars_in_more_than_one_movie()
+    {
+        return get_stars_with_ids_raw("select distinct S."+PRIMARY_ID+", S.first_name, S.last_name, S.DOB, group_concat(SiM.movie_id) as concat "+
+                " from stars S"+
+                " inner join stars_in_movies SiM "+
+                " where S."+PRIMARY_ID+" = SiM.star_id "+
+                " group by SiM."+MOVIE_ID_NAME+
+                " having count(SiM."+MOVIE_ID_NAME+") > 1 "+
+                OBR+
+                LIMIT+ "1"+ END);
+
+    }
+    public ArrayList<Star> get_stars_in_le_one_movie()
+    {
+        return get_stars_with_ids_raw("select distinct S."+PRIMARY_ID+", S.first_name, S.last_name, S.DOB, SiM.movie_id as concat "+
+                " from stars S "+
+                " inner join stars_in_movies SiM "+
+                " where S."+PRIMARY_ID+" = SiM.star_id "+
+                " group by SiM."+MOVIE_ID_NAME+
+                " having count(SiM."+MOVIE_ID_NAME+")<= 1 "+
+                OBR+
+                LIMIT+ "3"+ END);
+
     }
 }
 

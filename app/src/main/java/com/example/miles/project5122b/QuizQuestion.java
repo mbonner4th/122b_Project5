@@ -116,7 +116,16 @@ public class QuizQuestion
                 //Generate the answers here
                 break;
             case 6:
+                correctStar = mdb.get_stars_in_more_than_one_movie().get(0);
+                descriptors.add(mdb.get_movie_from_id(correctStar.getMovieIDs().get(0)).get(0).getTitle());
+                descriptors.add(mdb.get_movie_from_id(correctStar.getMovieIDs().get(1)).get(0).getTitle());
+                answers.add(new QuizAnswers(correctStar.getFirst_name()+" "+correctStar.getLast_name(),true));
                 //"Which star appears in both the movies X and Y?"movies+star+star
+                incorrect_stars = mdb.get_stars_in_le_one_movie();
+                for (Star s :incorrect_stars)
+                {
+                    answers.add(new QuizAnswers(s.getFirst_name()+" "+s.getLast_name(),false));
+                }
                 //Generate the answers here
                 break;
             case 7:
