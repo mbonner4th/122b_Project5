@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.lang.Math;
+import java.util.ArrayList;
 
 public class MainQuizActivity extends AppCompatActivity {
 
@@ -83,7 +84,9 @@ public class MainQuizActivity extends AppCompatActivity {
         Button answer3 = (Button)findViewById(R.id.Answer3);
         Button answer4 = (Button)findViewById(R.id.Answer4);
 
-        setOnClickListeners(answer1, answer2, answer3, answer4, correctAnswerNumber);
+        String rightAnswer;
+        ArrayList<String> wrongAnswers = new ArrayList<String>();
+
         this.question = new QuizQuestion(questionToDisplay, this.mdb);
         switch(questionToDisplay)
         {
@@ -120,13 +123,26 @@ public class MainQuizActivity extends AppCompatActivity {
                 //Generate the answers here
                 break;
         }
+        rightAnswer = "correct";
+        wrongAnswers.add("Wrong");
+        wrongAnswers.add("Wrong");
+        wrongAnswers.add("Wrong");
+        setOnClickListeners(answer1, answer2, answer3, answer4, correctAnswerNumber, rightAnswer, wrongAnswers);
     }
 
-    private void setOnClickListeners(Button answer1, Button answer2, Button answer3, Button answer4, int correctAnswerNumber)
+
+//
+    private void setOnClickListeners(Button answer1, Button answer2, Button answer3,
+                                     Button answer4, int correctAnswerNumber,
+                                     String rightAnswer, ArrayList<String> wrongAnswers)
     {
         switch(correctAnswerNumber)
         {
             case 1:
+                answer1.setText(rightAnswer);
+                answer2.setText(wrongAnswers.get(0));
+                answer3.setText(wrongAnswers.get(1));
+                answer4.setText(wrongAnswers.get(2));
                 answer1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -153,6 +169,12 @@ public class MainQuizActivity extends AppCompatActivity {
                 });
                 break;
             case 2:
+
+                answer1.setText(wrongAnswers.get(0));
+                answer2.setText(rightAnswer);
+                answer3.setText(wrongAnswers.get(1));
+                answer4.setText(wrongAnswers.get(2));
+
                 answer1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -179,6 +201,12 @@ public class MainQuizActivity extends AppCompatActivity {
                 });
                 break;
             case 3:
+
+                answer1.setText(wrongAnswers.get(0));
+                answer2.setText(wrongAnswers.get(1));
+                answer3.setText(rightAnswer);
+                answer4.setText(wrongAnswers.get(2));
+
                 answer1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -205,6 +233,12 @@ public class MainQuizActivity extends AppCompatActivity {
                 });
                 break;
             case 4:
+
+                answer1.setText(wrongAnswers.get(0));
+                answer2.setText(wrongAnswers.get(1));
+                answer3.setText(wrongAnswers.get(2));
+                answer4.setText(rightAnswer);
+
                 answer1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

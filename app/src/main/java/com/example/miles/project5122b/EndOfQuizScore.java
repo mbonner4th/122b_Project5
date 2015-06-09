@@ -55,7 +55,13 @@ public class EndOfQuizScore extends AppCompatActivity {
         correct.setText(Integer.toString(numCorrect));
         incorrect.setText(Integer.toString(numIncorrect));
 
-        int aveSeconds = (int)((numLocalTime / 1000)/(numCorrect+numIncorrect));
+        int aveSeconds;
+        if((numCorrect+ numIncorrect)!= 0) {
+            aveSeconds = (int) ((numLocalTime / 1000) / (numCorrect + numIncorrect));
+        }
+        else{
+            aveSeconds = (int)(numLocalTime / 1000);
+        }
         int minutes = aveSeconds / 60;
         int seconds     = aveSeconds % 60;
 
