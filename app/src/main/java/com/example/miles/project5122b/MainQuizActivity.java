@@ -20,7 +20,7 @@ public class MainQuizActivity extends AppCompatActivity {
     private TextView mTimeLabel;
     private Handler mHandler = new Handler();
     private long mStart;
-    private static final long duration = 10000;
+    private static final long duration = 20000;
 
     private Runnable updateTask = new Runnable() {
         public void run() {
@@ -41,8 +41,18 @@ public class MainQuizActivity extends AppCompatActivity {
                 mHandler.postAtTime(this, now + 1000);
             }
             else {
+
+                SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putInt("local_average_time", (int)duration);
+                editor.commit();
+
                 mHandler.removeCallbacks(this);
                 finish();
+
+                Intent nextScreen = new Intent(getApplicationContext(), EndOfQuizScore.class);
+                startActivity(nextScreen);
+
             }
         }
     };
@@ -241,7 +251,8 @@ public class MainQuizActivity extends AppCompatActivity {
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
         SharedPreferences.Editor editor = pref.edit();
-        editor.putInt("incorrect_answers", pref.getInt("incorrect_answers", 0)+1); //Storing integer
+        editor.putInt("incorrect_answers", pref.getInt("incorrect_answers", 0) + 1); //Storing integer
+        editor.putInt("local_incorrect", pref.getInt("local_incorrect", 0) + 1 );
         editor.commit();
         Context context = getApplicationContext();
         Toast.makeText(this, "BZZZZZT WRONG", Toast.LENGTH_LONG).show();
@@ -253,6 +264,7 @@ public class MainQuizActivity extends AppCompatActivity {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt("correct_answers", pref.getInt("correct_answers", 0)+1); //Storing integer
+        editor.putInt("local_correct", pref.getInt("local_correct", 0) + 1 );
         editor.commit();
         Context context = getApplicationContext();
         Toast.makeText(this, "You answered correctly", Toast.LENGTH_LONG).show();

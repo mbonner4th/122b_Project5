@@ -45,6 +45,7 @@ public class P5Game extends AppCompatActivity {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("GameStats", 0);
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt("quizzes_taken", pref.getInt("quizzes_taken", 0)+1); //Storing integer
+
         editor.commit();
 
         Intent nextScreen = new Intent(getApplicationContext(), MainQuizActivity.class);

@@ -24,6 +24,10 @@
             android:name=".StatisticsPageActivity"
             android:label="@string/title_activity_statistics_page" >
         </activity>
+        <activity
+            android:name=".EndOfQuizScore"
+            android:label="@string/title_activity_end_of_quiz_score" >
+        </activity>
     </application>
 
 </manifest>

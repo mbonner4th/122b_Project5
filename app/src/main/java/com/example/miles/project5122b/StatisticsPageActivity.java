@@ -2,12 +2,13 @@ package com.example.miles.project5122b;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.database.sqlite.*;
 
 public class StatisticsPageActivity extends AppCompatActivity {
 
