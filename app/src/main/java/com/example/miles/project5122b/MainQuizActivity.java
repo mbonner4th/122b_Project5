@@ -89,7 +89,7 @@ public class MainQuizActivity extends AppCompatActivity {
 
         String rightAnswer = "";
         ArrayList<String> wrongAnswers = new ArrayList<String>();
-
+        questionToDisplay = 4;
         this.question = new QuizQuestion(questionToDisplay, this.mdb);
 
         ArrayList<QuizAnswers> MyQuizAnswers = this.question.getAnswers();
