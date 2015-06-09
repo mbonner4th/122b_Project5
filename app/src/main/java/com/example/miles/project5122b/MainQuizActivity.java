@@ -21,6 +21,9 @@ public class MainQuizActivity extends AppCompatActivity {
     private Handler mHandler = new Handler();
     private long mStart;
     private static final long duration = 20000;
+    private DbAdapter mdb;
+    private QuizQuestion question;
+    
 
     private Runnable updateTask = new Runnable() {
         public void run() {
@@ -59,6 +62,7 @@ public class MainQuizActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mdb = new DbAdapter(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_quiz_activity_layout);
 
@@ -80,7 +84,7 @@ public class MainQuizActivity extends AppCompatActivity {
         Button answer4 = (Button)findViewById(R.id.Answer4);
 
         setOnClickListeners(answer1, answer2, answer3, answer4, correctAnswerNumber);
-
+        this.question = new QuizQuestion(questionToDisplay, this.mdb);
         switch(questionToDisplay)
         {
             case 1:

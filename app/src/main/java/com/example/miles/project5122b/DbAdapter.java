@@ -83,22 +83,16 @@ public class DbAdapter extends SQLiteOpenHelper {
         return "( " + str_to_enclose + " )";
     }
 
-    public DbAdapter(Context ctx) {
+    public DbAdapter(Context ctx)
+    {
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION);
         mContext = ctx;
-
         this.mDb = getWritableDatabase();
-        onCreate(mDb);
-    }
-
-    private void initDb()
-    {
-        this.mDb = null;
-        boolean dbExists;
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(SQLiteDatabase db)
+    {
 
         createStarsTable(db);
         createMoviesTable(db);
@@ -117,7 +111,8 @@ public class DbAdapter extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+    {
         dropTableIfExists(db, STARS_TABLE_NAME);
         dropTableIfExists(db, MOVIES_TABLE_NAME);
         dropTableIfExists(db, STARS_IN_MOVIES_TABLE_NAME);
@@ -125,7 +120,8 @@ public class DbAdapter extends SQLiteOpenHelper {
     }
 
 
-    private void readFileToDatabase(String filename, String tableName, ArrayList<String> columnNames, SQLiteDatabase db) {
+    private void readFileToDatabase(String filename, String tableName, ArrayList<String> columnNames, SQLiteDatabase db)
+    {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(mContext.getAssets().open(filename)));
             String line;
@@ -146,21 +142,24 @@ public class DbAdapter extends SQLiteOpenHelper {
     }
 
 
-    private void createStarsTable(SQLiteDatabase db) {
+    private void createStarsTable(SQLiteDatabase db)
+    {
         dropTableIfExists(db, STARS_TABLE_NAME);
         Log.d(PROGRAM_STAMP,"Creating Stars table:\n" + CREATE_STARS_TABLE);
         wrapExecuteSql(db, CREATE_STARS_TABLE);
     }
 
 
-    private void createMoviesTable(SQLiteDatabase db) {
+    private void createMoviesTable(SQLiteDatabase db)
+    {
         dropTableIfExists(db, MOVIES_TABLE_NAME);
         Log.d(PROGRAM_STAMP, "Creating movies table:\n" + CREATE_MOVIES_TABLE);
         wrapExecuteSql(db, CREATE_MOVIES_TABLE);
     }
 
 
-    private void createStarsInMoviesTable(SQLiteDatabase db) {
+    private void createStarsInMoviesTable(SQLiteDatabase db)
+    {
         dropTableIfExists(db, STARS_IN_MOVIES_TABLE_NAME);
         Log.d(PROGRAM_STAMP, "Creating Stars in movies table:\n" + CREATE_STARS_IN_MOVIES_TABLE);
         wrapExecuteSql(db, CREATE_STARS_IN_MOVIES_TABLE);
@@ -181,8 +180,49 @@ public class DbAdapter extends SQLiteOpenHelper {
             Log.e(PROGRAM_STAMP,"Error:\n" + e.toString());
         }
     }
+    private Cursor wrapQuerySql(String SQL)
+    {
+        Cursor c= null;
+        try {
+            c = mDb.rawQuery(SQL, null);
+        } catch (Exception e) {
+            Log.e(PROGRAM_STAMP,"Error:\n" + e.toString());
+        }
+        return c;
+    }
 
     //Who directed the movie X?
+    public Movie get_random_movie()
+    {
+        Movie m;
+        Cursor c = wrapQuerySql("SELECT * FROM "+
+                MOVIES_TABLE_NAME+" ORDER BY RANDOM() LIMIT 1;");
+        c.moveToFirst();
+        Log.d(PROGRAM_STAMP, "generating random Movie:");
+        m = new Movie(
+                c.getInt(c.getColumnIndex(PRIMARY_ID)),
+                c.getString(c.getColumnIndex(TITLE)),
+                c.getString(c.getColumnIndex(YEAR)),
+                c.getString(c.getColumnIndex(DIRECTOR)));
+        c.close();
+        Log.d(PROGRAM_STAMP,  m.toString());
+        return m;
+    }
 
+    public Star get_random_star()
+    {
+        Star s;
+        Cursor c = wrapQuerySql("SELECT * FROM "+STARS_TABLE_NAME+" ORDER BY RANDOM() LIMIT 1;");
+        c.moveToFirst();
+        Log.d(PROGRAM_STAMP, "generating random Star:");
+        s = new Star(
+                c.getInt(c.getColumnIndex(PRIMARY_ID)),
+                c.getString(c.getColumnIndex(FIRST_NAME)),
+                c.getString(c.getColumnIndex(LAST_NAME)),
+                c.getString(c.getColumnIndex(DOB)));
+        c.close();
+        Log.d(PROGRAM_STAMP, s.toString());
+        return s;
+    }
 
 }
