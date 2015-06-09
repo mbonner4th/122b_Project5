@@ -14,6 +14,7 @@ public class P5Game extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DbAdapter db = new DbAdapter(this);
         setContentView(R.layout.activity_p5_game);
     }
 
